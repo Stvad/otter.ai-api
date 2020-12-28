@@ -6,15 +6,14 @@ const API_BASE_URL = 'https://otter.ai/forward/api/v1';
 const AWS_S3_URL = 'https://s3.us-west-2.amazonaws.com';
 const CSRF_COOKIE_NAME = 'csrftoken';
 
-class OtterApi {
+export class OtterApi {
   constructor(options = {}) {
     this.options = options;
     this.user = {};
     this.csrfToken = '';
-    this.#login();
   }
 
-  #login = async () => {
+  login = async () => {
     const { email, password } = this.options;
 
     if (!email || !password) {
@@ -60,7 +59,8 @@ class OtterApi {
 
     axios.defaults.headers.common.cookie = cookieHeader;
 
-    console.log('Successfuly logged in to Otter.ai');
+    //todo: interferes with alfred :( `
+    // console.log('Successfuly logged in to Otter.ai');
 
     return response;
   };
@@ -157,6 +157,16 @@ class OtterApi {
 
     return finishResponse.data;
   };
+}
+
+/**
+ * @param options
+ * @returns {Promise<OtterApi>}
+ */
+export const createClient = async (options) => {
+  const client = new OtterApi(options)
+  await client.login()
+  return client
 }
 
 export default OtterApi;
